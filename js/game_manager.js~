@@ -66,7 +66,7 @@ GameManager.prototype.addStartTiles = function () {
 };
 
 // Adds a tile in a random position
-// TODO add tile opposite of vector
+// TODO intead, <add tile opposite of vector
 GameManager.prototype.addRandomTile = function () {
   if (this.grid.cellsAvailable()) {
     var value = Math.random() < 0.5 ? 1 : 2;
@@ -153,7 +153,7 @@ GameManager.prototype.move = function (direction) {
         var positions = self.findFarthestPosition(cell, vector);
         var next      = self.grid.cellContent(positions.next);
 
-        // Only one merger per row traversal?
+        // Only one merger per row traversal? //wat.
         if (next && next.value === tile.value && !next.mergedFrom) {
           var merged = new Tile(positions.next, tile.value + next.value);
           merged.mergedFrom = [tile, next];
@@ -224,8 +224,15 @@ GameManager.prototype.findFarthestPosition = function (cell, vector) {
   var previous;
 
   // Progress towards the vector direction **ONCE**
-  previous = cell;
-  cell     = { x: previous.x + vector.x, y: previous.y + vector.y };
+  var push_limit = 2;
+  var pushed = 0;
+  do {
+    previous = cell;
+    cell = { x: previous.x + vector.x, y: previous.y + vector.y };
+    pushed = pushed + 1;
+  } while (this.grid.withinBounds(cell) &&
+           this.grid.cellAvailable(cell) &&
+           pushed < 2);
 
   return {
     farthest: previous,
@@ -248,7 +255,7 @@ GameManager.prototype.tileMatchesAvailable = function () {
       tile = this.grid.cellContent({ x: x, y: y });
 
       if (tile) {
-        for (var direction = 0; direction < 4; direction++) {
+        for (var direction = 0; direction < 2; direction++) {
           var vector = self.getVector(direction);
           var cell   = { x: x + vector.x, y: y + vector.y };
 
