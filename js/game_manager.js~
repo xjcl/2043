@@ -66,7 +66,7 @@ GameManager.prototype.addStartTiles = function () {
 };
 
 // Adds a tile in a random position
-// TODO intead, <add tile opposite of vector
+// TODO add tile opposite of vector
 GameManager.prototype.addRandomTile = function () {
   if (this.grid.cellsAvailable()) {
     var value = Math.random() < 0.5 ? 1 : 2;
