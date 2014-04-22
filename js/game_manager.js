@@ -152,11 +152,19 @@ GameManager.prototype.move = function (direction) {
       if (tile) {
         var positions = self.findFarthestPosition(cell, vector);
         var next      = self.grid.cellContent(positions.next);
-
+        
+        var merge_condition = false;
+        
+        if (next && next.value + tile.value === 3
+            && !next.mergedFrom) {merge_condition = true;}
+            
+        if (next && next.value >= 3 && tile.value >= 3
+            && next.value === tile.value && !next.mergedFrom) {merge_condition = true;}
+        
         // Only one merger per row traversal? //wat.
-        if (next && next.value === tile.value && !next.mergedFrom) {
+        if (merge_condition) {
           var merged = new Tile(positions.next, tile.value + next.value);
-          merged.mergedFrom = [tile, next];
+          merged.mergedFrom = [tile, next];//XXX XXX XXX
 
           self.grid.insertTile(merged);
           self.grid.removeTile(tile);
@@ -232,8 +240,10 @@ GameManager.prototype.findFarthestPosition = function (cell, vector) {
     pushed = pushed + 1;
   } while (this.grid.withinBounds(cell) &&
            this.grid.cellAvailable(cell) &&
-           pushed < 2);
-
+           pushed < push_limit);
+           
+    if (pushed === 2) cell = previous;
+    
   return {
     farthest: previous,
     next: cell // Used to check if a merge is required
@@ -261,7 +271,9 @@ GameManager.prototype.tileMatchesAvailable = function () {
 
           var other  = self.grid.cellContent(cell);
 
-          if (other && other.value === tile.value) {
+          if ((other && other.value === tile.value
+             && other.value >= 3 && tile.value >= 3) || 
+                (other && other.value + tile.value === 3)) {
             return true; // These two tiles can be merged
           }
         }

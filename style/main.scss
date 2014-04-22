@@ -354,13 +354,13 @@ hr {
 
     &.tile-#{$power} .tile-inner {
       // Calculate base background color
-      $gold-percent: ($exponent - 1) / ($limit - 1) * 100;
+      $gold-percent: ($exponent + 1) / ($limit - 1) * 100;
       $mixed-background: mix($tile-gold-color, $tile-color, $gold-percent);
 
       $nth-color: nth($special-colors, $exponent+2);
 
-      $special-background: nth($nth-color, 1);
-      $bright-color: nth($nth-color, 2);
+      $special-background: nth($nth-color, 3);
+      $bright-color: nth($nth-color, 4);
 
       @if $special-background {
         $mixed-background: mix($special-background, $mixed-background, 55%);
